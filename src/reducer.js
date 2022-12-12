@@ -1,5 +1,17 @@
 // add code snippets from README
-let state;
+function createStore() {
+  let state;
+
+  function dispatch(action) {
+    state = changeState(action, state);
+    render();
+  }
+  function getState() {
+    return state;
+  }
+  return { dispatch, getState };
+}
+
 const button = document.querySelector("#button");
 
 function changeState(action, state = { count: 0 }) {
@@ -13,16 +25,14 @@ function changeState(action, state = { count: 0 }) {
   }
 }
 
-function render(params) {
-  document.querySelector("#container").textContent = state.count;
-}
-function dispatch(action) {
-  state = changeState(action, state);
-  render();
+const store = createStore();
+function render() {
+  let container = document.querySelector("#container");
+  container.textContent = store.getState().count;
 }
 
-dispatch({ type: "@@INIT" });
+store.dispatch({ type: "@@INIT" });
 
 button.addEventListener("click", () => {
-  dispatch({ type: "counter/increment" });
+  store.dispatch({ type: "counter/increment" });
 });
